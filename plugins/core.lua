@@ -62,16 +62,38 @@ return {
   --     )
   --   end,
   -- },
+  {
+    "nvim-telescope/telescope.nvim",
+    config = function(_, opts)
+      local telescope = require "telescope"
+      telescope.setup(opts)
+      local utils = require "astronvim.utils"
+      local conditional_func = utils.conditional_func
+      conditional_func(telescope.load_extension, utils.is_available "project.nvim", "projects")
+      conditional_func(telescope.load_extension, utils.is_available "telescope-frecency.nvim", "frecency")
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
+    config = function(_, _)
+      local lsp = require "astronvim.utils.lsp"
+      lsp.capabilities.offsetEncoding = { "utf-16" }
+      lsp.setup "clangd"
+    end,
+  },
   -- By adding to the which-key config and using our helper function you can add more which-key registered bindings
-  -- {
-  --   "folke/which-key.nvim",
-  --   config = function(plugin, opts)
-  --     require "plugins.configs.which-key"(plugin, opts) -- include the default astronvim config that calls the setup call
-  --     -- Add bindings which show up as group name
-  --     local wk = require "which-key"
-  --     wk.register({
-  --       b = { name = "Buffer" },
-  --     }, { mode = "n", prefix = "<leader>" })
-  --   end,
-  -- },
+  {
+    "folke/which-key.nvim",
+    config = function(plugin, opts)
+      require "plugins.configs.which-key"(plugin, opts) -- include the default astronvim config that calls the setup call
+      -- Add bindings which show up as group name
+      local wk = require "which-key"
+      wk.register({
+        gd = { name = "Git diffview" },
+        h = { name = "Hop" },
+        m = { name = "MarkdownToggle" },
+        s = { name = "Spectre" },
+      }, { mode = "n", prefix = "<leader>" })
+    end,
+  },
 }
